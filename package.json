@@ -1,0 +1,22 @@
+{
+  "name": "cmk-checklist",
+  "version": "0.91.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && mocha build/test"
+  },
+  "author": "spring-raining",
+  "license": "MIT",
+  "dependencies": {
+    "@types/csv-parse": "^1.1.5",
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.46",
+    "@types/power-assert": "^1.4.29",
+    "csv-parse": "^1.1.7",
+    "mocha": "^3.1.2",
+    "power-assert": "^1.4.1",
+    "typescript": "^2.0.6"
+  }
+}
