@@ -1,4 +1,4 @@
-export type Encoding = 'Shift_JIS' | 'ISO-20220JP' | 'EUC-JP' | 'UTF-8';
+export type Encoding = 'Shift_JIS' | 'ISO-2022-JP' | 'EUC-JP' | 'UTF-8';
 
 export interface Color {
   r: number;
