@@ -129,6 +129,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
 
   const serialNumber = readAsNum(row[1]);
   let week = readAsStr(row[5]);
+  let block = readAsStr(row[7]);
   const circleName = readAsStr(row[10]);
   const circleNameYomi = readAsStr(row[11]);
   const penName = readAsStr(row[12]);
@@ -148,6 +149,9 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
   if (week && ['日', '月', '火', '水', '木', '金', '土'].indexOf(week) < 0) {
     week = undefined;
   }
+  if (block !== undefined) {
+    block = Encoding.toHankakuCase(block);
+  }
   if (spaceNumberSub && [0, 1].indexOf(spaceNumberSub) < 0) {
     spaceNumberSub = undefined;
   }
@@ -159,7 +163,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     cutIndex: readAsNum(row[4]),
     week: week? <Week>week : undefined,
     area: readAsStr(row[6]),
-    block: readAsStr(row[7]),
+    block: block,
     spaceNumber: readAsNum(row[8]),
     genreCode: readAsNum(row[9]),
     circleName: circleName,

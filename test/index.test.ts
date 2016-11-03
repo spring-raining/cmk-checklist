@@ -169,5 +169,15 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
       ]);
     });
 
+    it('should convert zenkaku to hankaku', () => {
+      const header = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n';
+      const str1 = header + `Circle,112676,5,352,5,金,西,ａ,56,910,Ｔ年Ｍ組,ティーネンエムグミ,西川貴教,HOT LIMIT的な何か,,,,,,,,0,,,,`
+
+      return index.read(str1).then((result) => {
+        assert.equal(result.circles[0].block, 'a');
+        assert.equal(result.circles[0].circleName, 'Ｔ年Ｍ組');
+      });
+    });
+
   });
 });
