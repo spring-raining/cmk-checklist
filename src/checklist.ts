@@ -6,10 +6,7 @@ export interface Color {
   b: number;
 }
 
-export enum SpaceNumberSub {
-  'a' = 0,
-  'b' = 1,
-}
+export type SpaceNumberSub = 'a' | 'b';
 
 export type Week = '月' | '火' | '水' | '木' | '金' | '土' | '日';
 
@@ -46,6 +43,8 @@ export interface ChecklistCircle extends ChecklistColumn {
   updateData?: string;
   webCatalogUrl?: string;
   circlemsUrl?: string;
+  rss?: string;
+  rssData?: string;
 }
 
 export interface ChecklistUnknown extends ChecklistColumn {
@@ -65,14 +64,31 @@ export interface ChecklistUnknown extends ChecklistColumn {
 
 export interface ChecklistColor extends ChecklistColumn {
   colorNumber: number;
-  checkcolor: Color;
+  checkColor: Color;
   printColor: Color;
   colorDescription?: string;
 }
 
-export interface Checklist {
+export class Checklist {
   header: ChecklistHeader;
   circles: ChecklistCircle[];
-  unknown: ChecklistUnknown[];
+  unknowns: ChecklistUnknown[];
   colors: ChecklistColor[];
+
+  constructor(
+    header: ChecklistHeader,
+    circles?: ChecklistCircle[] | null,
+    unknowns?: ChecklistUnknown[] | null,
+    colors?: ChecklistColor[] | null
+  ) {
+    this.header = header;
+    this.circles = circles || [];
+    this.unknowns = unknowns || [];
+    this.colors = colors || [];
+  }
+
+  getComiketNumber(): number | null {
+    const e = /^ComicMarket(\d+)$/.exec(this.header.eventName);
+    return e? +e[1] : null;
+  };
 }
