@@ -1,7 +1,7 @@
 import * as parse from 'csv-parse';
 import * as Encoding from 'encoding-japanese';
 import {Checklist, ChecklistHeader, ChecklistCircle, ChecklistUnknown, ChecklistColor,
-  Encoding as ChecklistEncoding, Color, SpaceNumberSub, Week} from './Checklist';
+  Encoding as ChecklistEncoding, Color, SpaceNumberSub, Week} from './checklist';
 
 const ListRecordHeader = 'Header';
 const ListRecordCircle = 'Circle';
