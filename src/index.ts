@@ -34,6 +34,9 @@ export function parseChecklistCSV(input: string | Uint8Array | Buffer): Promise<
           resolve(ret);
         }
       }
+      if (detected === 'ASCII') {
+        resolve(ret);
+      }
       switch (ret[0][3].toLowerCase()) {
         case 'shift_jis':
           if (detected !== 'SJIS') {
@@ -361,7 +364,10 @@ export async function write(checklist: Checklist, encoding: ChecklistEncoding = 
   });
 
   checklist.colors.forEach((color) => {
-    const convert = (c: Color) => c.b.toString(16) + c.g.toString(16) + c.r.toString(16);
+    const convert = (c: Color) => {
+      const num = 0x1000000 + (c.b << 16) + (c.g << 8) + c.r;
+      return num.toString(16).substr(1);
+    };
 
     input.push([
       ListRecordColor,
@@ -376,10 +382,14 @@ export async function write(checklist: Checklist, encoding: ChecklistEncoding = 
     new Promise((resolve, reject) => {
       stringify(input, (error, output) => {
         if (error) reject(error);
-        resolve();
+        resolve(output);
       });
     })
   )(input);
-
-  return new Uint8Array(Encoding.convert(str, outputEnc));
+  const arrayBuf = <ArrayBuffer>Encoding.convert(str, {
+    from: 'UNICODE',
+    to: outputEnc,
+    type: 'arraybuffer',
+  });
+  return new Uint8Array(arrayBuf);
 }

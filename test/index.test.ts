@@ -2,6 +2,7 @@ import * as assert from 'power-assert';
 import * as fs from 'fs';
 
 import * as index from '../src/index';
+import {Checklist} from '../src/checklist';
 
 describe('lib', () => {
   describe('checklist', () => {
@@ -124,7 +125,7 @@ memo"`;
     it('should skip empty line', () => {
       const str = `Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1
 
-Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョウ,比村奇石,月曜日のたわわ,http://c10025817.circle.ms/oc/CircleProfile.aspx,strangestone.himura@gmail.com,,,,,,0`;
+Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョウ,比村奇石,月曜日のたわわ,,,,,,,,0`;
 
       return index.read(str).then((result) => {
         assert.equal(result.circles[0].circleName, '比村乳業');
@@ -141,8 +142,8 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
 
     it('should fail on too short column', () => {
       const header = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n';
-      const str1 = header + `Circle,121795,9,605,16,土,東,シ,61,500,"アニメチックシェーダー","アニメチックシェーダー","トヨトク","トルカトラレルカ2","http://toyotokublog.blog.so-net.ne.jp/","","３ＤＣＧアニメーションスタジオ「サンジゲン」の有志サークル。イラスト、原画集、メイキング本を配布。","",,,""`;
-      const str2 = header + `Circle,121795,9,605,16,土,東,シ,61,500,"アニメチックシェーダー","アニメチックシェーダー","トヨトク","トルカトラレルカ2","http://toyotokublog.blog.so-net.ne.jp/","","３ＤＣＧアニメーションスタジオ「サンジゲン」の有志サークル。イラスト、原画集、メイキング本を配布。","",,,"",1`;
+      const str1 = header + `Circle,121795,9,605,16,土,東,シ,61,500,"アニメチックシェーダー","アニメチックシェーダー","トヨトク","トルカトラレルカ2","","","３ＤＣＧアニメーションスタジオ「サンジゲン」の有志サークル。イラスト、原画集、メイキング本を配布。","",,,""`;
+      const str2 = header + `Circle,121795,9,605,16,土,東,シ,61,500,"アニメチックシェーダー","アニメチックシェーダー","トヨトク","トルカトラレルカ2","","","３ＤＣＧアニメーションスタジオ「サンジゲン」の有志サークル。イラスト、原画集、メイキング本を配布。","",,,"",1`;
       const str3 = header + `UnKnown,"apricot+","アプリコットプラス"`;
       const str4 = header + `UnKnown,"apricot+","アプリコットプラス","蒼樹うめ"`;
       const str5 = header + `Color,6,a857a8`;
@@ -173,13 +174,69 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
 
     it('should convert zenkaku to hankaku', () => {
       const header = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n';
-      const str1 = header + `Circle,112676,5,352,5,金,西,ａ,56,910,Ｔ年Ｍ組,ティーネンエムグミ,西川貴教,HOT LIMIT的な何か,,,,,,,,0,,,,`
+      const str1 = header + `Circle,112676,5,352,5,金,西,ａ,56,910,Ｔ年Ｍ組,ティーネンエムグミ,西川貴教,HOT LIMIT的な何か,,,,,,,,0,,,,`;
 
       return index.read(str1).then((result) => {
         assert.equal(result.circles[0].block, 'a');
         assert.equal(result.circles[0].circleName, 'Ｔ年Ｍ組');
       });
     });
+  });
 
+  describe('write', () => {
+    it('should write all cloumns', () => {
+      const str = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n'
+        + 'Circle,115877,3,441,2,土,東,Ａ,36,301,ロケット燃料★21,ﾛｹｯﾄﾈﾝﾘｮｳ,秋★枝,大淀漫画03,url,mail,description,memo,870,40,3,1,,webcatalog,circlems,,twitter,pixiv,\n'
+        + 'UnKnown,circle name,circle name yomi,pen name,"""memo\nmemo""",0,book,url,mail,description,"update""data",circlems,rss\n'
+        + 'Color,1,000000,FFFFFF,"desc\nription"';
+
+      return index.read(str).then((result) => {
+        assert.equal(result.circles.length, 1);
+        assert.equal(result.unknowns.length, 1);
+        assert.equal(result.colors.length, 1);
+        return index.write(result);
+      }).then((result) => {
+        assert.ok(result.byteLength > 0);
+        return index.parseChecklistCSV(result);
+      }).then((result) => {
+        assert.deepEqual(result, [
+          ['Header', 'ComicMarketCD-ROMCatalog', 'ComicMarket90', 'UTF-8', 'Web 1.90.1'],
+          ['Circle', '115877', '3', '441', '2', '土', '東', 'Ａ','36', '301', 'ロケット燃料★21', 'ﾛｹｯﾄﾈﾝﾘｮｳ', '秋★枝', '大淀漫画03', 'url', 'mail', 'description', 'memo', '870', '40', '3', '1', '', 'webcatalog', 'circlems', '', 'twitter', 'pixiv'],
+          ['UnKnown', 'circle name', 'circle name yomi', 'pen name', '"memo\nmemo"', '0', 'book', 'url', 'mail', 'description', 'update"data', 'circlems', 'rss'],
+          ['Color', '1', '000000', 'ffffff', 'desc\nription'],
+        ]);
+      });
+    });
+
+    it('should write specific encoding', () => {
+      const str = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,utf-8,Web 1.90.1\n'
+        + 'Color,0,123456,fedcba,非ASCII文字';
+
+      return index.read(str).then((result) => {
+        assert.equal(result.header.encoding, 'UTF-8');
+        return index.write(result, 'EUC-JP');
+      }).then((result) => {
+        return index.parseChecklistCSV(result);
+      }).then((result) => {
+        assert.deepEqual(result, [
+          ['Header', 'ComicMarketCD-ROMCatalog', 'ComicMarket90', 'EUC-JP', 'Web 1.90.1'],
+          ['Color', '0', '123456', 'fedcba', '非ASCII文字'],
+        ]);
+      });
+    });
+
+    it('should fail on invalid event number', () => {
+      const checklist1 = new Checklist({eventName: 'invalid', encoding: 'UTF-8', programSignature: 'Web 1.90.1'});
+      const checklist2 = new Checklist({eventName: 'ComicMarket75', encoding: 'UTF-8', programSignature: 'Web 1.90.1'});
+
+      return Promise.all([
+        index.write(checklist1).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Invalid event name');
+        }),
+        index.write(checklist2).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Cannot write the checklist for earlier than Comiket 75');
+        }),
+      ]);
+    });
   });
 });
