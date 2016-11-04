@@ -1,0 +1,10 @@
+machine:
+  node:
+    version: 6.9.1
+test:
+  override:
+    - npm test
+    - nvm install 5.12.0 && nvm use 5.12.0
+    - npm test
+    - nvm install 4.6.1 && nvm use 4.6.1
+    - npm test
