@@ -55,7 +55,7 @@ describe('lib', () => {
       const header = '"Header","ComicMarketCD-ROMCatalog","ComicMarket90","UTF-8","Web 1.90.1"\n';
       const str1 = header + `Circle,135747,6,992,36,日,東,ム,38,135,pentapod,ペンタポッド,緑豆はるさめ,book,https://pentapod.github.io/c90,mail,"test
  ""test""
-test",memo,"999","888","777",1,updateData,webCatalog,circlems,rssData`;
+test",memo,"999","888","777",1,updateData,webCatalog,circlems,rssData,twitter,pixiv`;
       const str2 = header + `UnKnown,"ねこはまんまがうつくしい","ネコハマンマガウツクシイ","Hisasi","memo
 memo""",3,"book","url","mail","description","update","circlems","rss"`;
       const str3 = header + `Color,0,"123456","FeDcBa","""
@@ -90,6 +90,8 @@ memo"`;
             circlemsUrl: 'circlems',
             rss: undefined,
             rssData: 'rssData',
+            twitterUrl: 'twitter',
+            pixivUrl: 'pixiv',
           });
         }),
         index.read(str2).then((result) => {

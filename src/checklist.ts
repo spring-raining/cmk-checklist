@@ -45,6 +45,8 @@ export interface ChecklistCircle extends ChecklistColumn {
   circlemsUrl?: string;
   rss?: string;
   rssData?: string;
+  twitterUrl?: string;
+  pixivUrl?: string;
 }
 
 export interface ChecklistUnknown extends ChecklistColumn {

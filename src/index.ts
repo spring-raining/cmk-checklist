@@ -183,7 +183,9 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     webCatalogUrl: (eventNumber >= 90)? readAsStr(row[23]) : undefined,
     circlemsUrl: (eventNumber >=90)? readAsStr(row[24]): readAsStr(row[23]),
     rss: (eventNumber >= 90)? undefined : readAsStr(row[24]),
-    rssData: (row.length >= 26)? readAsStr(row[25]) : undefined,
+    rssData: readAsStr(row[25]),
+    twitterUrl: readAsStr(row[26]),
+    pixivUrl: readAsStr(row[27]),
   };
 }
 
@@ -254,11 +256,11 @@ function readColorRow(row: string[], rowNumber: number, eventName: number): Chec
   };
 }
 
-function readAsStr(str: string) {
-  return str === ''? undefined : str;
+function readAsStr(str: string | undefined) {
+  return (str === undefined || str === '')? undefined : str;
 }
 
-function readAsNum(str: string) {
+function readAsNum(str: string | undefined) {
   const ret = +str;
   return isNaN(ret)? undefined
     : (ret === 0 && str !== '0')? undefined
@@ -335,6 +337,8 @@ export async function write(checklist: Checklist, encoding: ChecklistEncoding = 
       (eventNumber >= 90)? circle.webCatalogUrl : circle.circlemsUrl,
       (eventNumber >= 90)? circle.circlemsUrl : circle.rss,
       circle.rssData,
+      circle.twitterUrl,
+      circle.pixivUrl,
     ]);
   });
 
