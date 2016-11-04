@@ -91,4 +91,8 @@ export class Checklist {
     const e = /^ComicMarket(\d+)$/.exec(this.header.eventName);
     return e? +e[1] : null;
   };
+
+  setComiketNumber(num: number): void {
+    this.header.eventName = 'ComicMarket' + num;
+  }
 }

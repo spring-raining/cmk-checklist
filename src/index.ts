@@ -1,4 +1,5 @@
 import * as parse from 'csv-parse';
+import * as stringify from 'csv-stringify';
 import * as Encoding from 'encoding-japanese';
 import {Checklist, ChecklistHeader, ChecklistCircle, ChecklistUnknown, ChecklistColor,
   Encoding as ChecklistEncoding, Color, SpaceNumberSub, Week} from './checklist';
@@ -262,4 +263,119 @@ function readAsNum(str: string) {
   return isNaN(ret)? undefined
     : (ret === 0 && str !== '0')? undefined
     : ret;
+}
+
+export async function write(checklist: Checklist, encoding: ChecklistEncoding = 'UTF-8'): Promise<Uint8Array> {
+  let eventNumber = checklist.getComiketNumber();
+  if (eventNumber === null) {
+    throw new Error('Invalid event name');
+  }
+  if (eventNumber <= 75) {
+    throw new Error('Cannot write the checklist for earlier than Comiket 75');
+  }
+
+  let outputEnc: Encoding.Encoding;
+  switch (encoding) {
+    case 'Shift_JIS':
+      outputEnc = 'SJIS';
+      break;
+    case 'ISO-2022-JP':
+      outputEnc = 'JIS';
+      break;
+    case 'EUC-JP':
+      outputEnc = 'EUCJP';
+      break;
+    case 'UTF-8':
+      outputEnc = 'UTF8';
+      break;
+    default:
+      throw new Error(`Cannot write that encoding : ${encoding}`);
+  }
+
+
+  const input: any[][] = [];
+  input.push([
+    ListRecordHeader,
+    ListSignature,
+    checklist.header.eventName,
+    encoding,
+    checklist.header.programSignature,
+  ]);
+
+  checklist.circles.forEach((circle) => {
+    const block = (circle.block === undefined)? undefined
+      : Encoding.toZenkakuCase(circle.block);
+    const spaceNumberSub = (circle.spaceNumberSub === undefined)? undefined
+      : (circle.spaceNumberSub === 'a')? 0 : 1;
+
+    input.push([
+      ListRecordCircle,
+      circle.serialNumber,
+      circle.colorNumber,
+      circle.pageNumber,
+      circle.cutIndex,
+      circle.week,
+      circle.area,
+      block,
+      circle.spaceNumber,
+      circle.genreCode,
+      circle.circleName,
+      circle.circleNameYomi,
+      circle.penName,
+      circle.bookName,
+      circle.url,
+      circle.mailAddress,
+      circle.description,
+      circle.memo,
+      circle.mapX,
+      circle.mapY,
+      circle.mapLayout,
+      spaceNumberSub,
+      circle.updateData,
+      (eventNumber >= 90)? circle.webCatalogUrl : circle.circlemsUrl,
+      (eventNumber >= 90)? circle.circlemsUrl : circle.rss,
+      circle.rssData,
+    ]);
+  });
+
+  checklist.unknowns.forEach((unknown) => {
+    input.push([
+      ListRecordUnknown,
+      unknown.circleName,
+      unknown.circleNameYomi,
+      unknown.penName,
+      unknown.memo,
+      unknown.colorNumber,
+      unknown.bookName,
+      unknown.url,
+      unknown.mailAddress,
+      unknown.description,
+      unknown.updateData,
+      unknown.circlemsUrl,
+      unknown.rss,
+    ]);
+  });
+
+  checklist.colors.forEach((color) => {
+    const convert = (c: Color) => c.b.toString(16) + c.g.toString(16) + c.r.toString(16);
+
+    input.push([
+      ListRecordColor,
+      color.colorNumber,
+      convert(color.checkColor),
+      convert(color.printColor),
+      color.colorDescription,
+    ]);
+  });
+
+  const str = await ((input): Promise<string> =>
+    new Promise((resolve, reject) => {
+      stringify(input, (error, output) => {
+        if (error) reject(error);
+        resolve();
+      });
+    })
+  )(input);
+
+  return new Uint8Array(Encoding.convert(str, outputEnc));
 }
