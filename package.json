@@ -1,12 +1,13 @@
 {
   "name": "cmk-checklist",
-  "version": "0.90.1",
+  "version": "0.90.2",
   "compliantComiketNumber": 90,
   "description": "Read/Write CSV files for Comiket catalog checklist",
   "keywords": ["comiket", "comic market"],
   "main": "build/main.js",
+  "typings": "build/main.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p .",
     "prepublish": "npm run build",
     "test": "npm run build && mocha --compilers ts:espower-typescript/guess test/**/*.ts"
   },
