@@ -1,24 +1,34 @@
 {
   "name": "cmk-checklist",
-  "version": "0.91.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.90.0",
+  "compliantComiketNumber": 90,
+  "description": "Read/Write CSV files for Comiket catalog checklist",
+  "keywords": ["comiket", "comic market"],
+  "main": "build/main.js",
   "scripts": {
     "build": "tsc",
-    "test": "tsc && mocha build/test"
+    "prepublish": "npm run build",
+    "test": "npm run build && mocha --compilers ts:espower-typescript/guess test/**/*.ts"
   },
   "author": "spring-raining",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spring-raining/cmk-checklist.git"
+  },
   "dependencies": {
     "@types/csv-parse": "^1.1.5",
     "@types/csv-stringify": "^0.0.32",
     "@types/encoding-japanese": "^1.0.15",
-    "@types/mocha": "^2.2.32",
     "@types/node": "^6.0.46",
-    "@types/power-assert": "^1.4.29",
     "csv-parse": "^1.1.7",
     "csv-stringify": "^1.0.4",
-    "encoding-japanese": "^1.0.24",
+    "encoding-japanese": "^1.0.24"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/power-assert": "^1.4.29",
+    "espower-typescript": "^6.0.1",
     "mocha": "^3.1.2",
     "power-assert": "^1.4.1",
     "typescript": "^2.0.6"

@@ -1,10 +1,15 @@
 import * as assert from 'power-assert';
 import * as fs from 'fs';
 
-import * as index from '../src/index';
+import * as index from '../src/main';
 import {Checklist} from '../src/checklist';
 
-describe('lib', () => {
+describe('main', () => {
+
+  it('sould return compliant comiket number', () => {
+    assert.ok(index.CompliantComiketNumber >= 90);
+  });
+
   describe('checklist', () => {
     it('should parse string to array', () => {
       const str = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Windows 1.90.1\ntest 1 ,test 2';
@@ -18,7 +23,7 @@ describe('lib', () => {
     });
 
     it('should convert Shift_JIS & CR-LF file', () => {
-      const str = fs.readFileSync(__dirname + '/../../test/sjis-crlf-test.csv');
+      const str = fs.readFileSync(__dirname + '/sjis-crlf-test.csv');
 
       return index.parseChecklistCSV(str).then((result) => {
         assert.deepEqual(result, [
@@ -29,7 +34,7 @@ describe('lib', () => {
     });
 
     it('should convert EUC-JP & LF file', () => {
-      const str = fs.readFileSync(__dirname + '/../../test/eucjp-lf-test.csv');
+      const str = fs.readFileSync(__dirname + '/eucjp-lf-test.csv');
 
       return index.parseChecklistCSV(str).then((result) => {
         assert.deepEqual(result, [
@@ -40,7 +45,7 @@ describe('lib', () => {
     });
 
     it('should convert ISO-2022-JP & CR file', () => {
-      const str = fs.readFileSync(__dirname + '/../../test/jis-cr-test.csv');
+      const str = fs.readFileSync(__dirname + '/jis-cr-test.csv');
 
       return index.parseChecklistCSV(str).then((result) => {
         assert.deepEqual(result, [
