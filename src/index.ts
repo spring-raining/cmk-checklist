@@ -135,7 +135,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
   let week = readAsStr(row[5]);
   let block = readAsStr(row[7]);
   const circleName = readAsStr(row[10]);
-  const circleNameYomi = readAsStr(row[11]);
+  let circleNameYomi = readAsStr(row[11]);
   const penName = readAsStr(row[12]);
   let spaceNumberSub = readAsNum(row[21]);
   if (serialNumber === undefined) {
@@ -146,6 +146,8 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
   }
   if (circleNameYomi === undefined) {
     throw new Error(`Circle name yomigana is not defined(row: ${rowNumber})`);
+  } else {
+    circleNameYomi = Encoding.toZenkanaCase(circleNameYomi);
   }
   if (penName === undefined) {
     throw new Error(`Pen name is not defined (row: ${rowNumber})`);
@@ -198,13 +200,15 @@ function readUnknownRow(row: string[], rowNumber: number, eventNumber: number): 
   }
 
   const circleName = readAsStr(row[1]);
-  const circleNameYomi = readAsStr(row[2]);
+  let circleNameYomi = readAsStr(row[2]);
   const penName = readAsStr(row[3]);
   if (circleName === undefined) {
     throw new Error(`Circle name is not defined (row: ${rowNumber})`);
   }
   if (circleNameYomi === undefined) {
     throw new Error(`Circle name yomigana is not defined(row: ${rowNumber})`);
+  } else {
+    circleNameYomi = Encoding.toZenkanaCase(circleNameYomi);
   }
   if (penName === undefined) {
     throw new Error(`Pen name is not defined (row: ${rowNumber})`);

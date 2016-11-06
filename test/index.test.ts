@@ -181,6 +181,17 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
         assert.equal(result.circles[0].circleName, 'Ｔ年Ｍ組');
       });
     });
+
+    it('should convert hankana to zenkana', () => {
+      const str1 = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n'
+        + `Circle,115860,3,440,21,土,東,Ａ,28,301,ルミノシティ,ﾙﾐﾉｼﾃｨ,ぺこ,,,,,,1100,30,3,0,,,,,,,\n`
+        + `UnKnown,"Da Hootch","ﾀﾞﾌｰﾁ","新堂エル","",1,"","","",""`;
+
+      return index.read(str1).then((result) => {
+        assert.equal(result.circles[0].circleNameYomi, 'ルミノシティ');
+        assert.equal(result.unknowns[0].circleNameYomi, 'ダフーチ');
+      });
+    });
   });
 
   describe('write', () => {
@@ -201,7 +212,7 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
       }).then((result) => {
         assert.deepEqual(result, [
           ['Header', 'ComicMarketCD-ROMCatalog', 'ComicMarket90', 'UTF-8', 'Web 1.90.1'],
-          ['Circle', '115877', '3', '441', '2', '土', '東', 'Ａ','36', '301', 'ロケット燃料★21', 'ﾛｹｯﾄﾈﾝﾘｮｳ', '秋★枝', '大淀漫画03', 'url', 'mail', 'description', 'memo', '870', '40', '3', '1', '', 'webcatalog', 'circlems', '', 'twitter', 'pixiv'],
+          ['Circle', '115877', '3', '441', '2', '土', '東', 'Ａ','36', '301', 'ロケット燃料★21', 'ロケットネンリョウ', '秋★枝', '大淀漫画03', 'url', 'mail', 'description', 'memo', '870', '40', '3', '1', '', 'webcatalog', 'circlems', '', 'twitter', 'pixiv'],
           ['UnKnown', 'circle name', 'circle name yomi', 'pen name', '"memo\nmemo"', '0', 'book', 'url', 'mail', 'description', 'update"data', 'circlems', 'rss'],
           ['Color', '1', '000000', 'ffffff', 'desc\nription'],
         ]);
