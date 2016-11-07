@@ -49,15 +49,15 @@ const fs = require('fs');
 async function write() {
   // 既存のチェックリストを読み込み
   const file = fs.readFileSync('./checklist.csv');
-  let checklist = await checklist.read(file);
+  let chk = await checklist.read(file);
 
   // チェックリストを新規作成
-  checklist = new checklist.Checklist();
+  chk = new checklist.Checklist();
   // コミケ開催番号を指定して作成
-  checklist = new checklist.Checklist(90);
+  chk = new checklist.Checklist(91);
 
   // サークルを追加
-  checklist.circles.append({
+  chk.circles.append({
     serialNumber: 129936,
     colorNumber: 1,
     pageNumber: 831,
@@ -74,7 +74,7 @@ async function write() {
   });
 
   // チェックリストを書き込み
-  const output = await checklist.write(checklist);
+  const output = await checklist.write(chk);
   fs.writeFileSync('./output.csv', new Buffer(output));
 }
 ```
