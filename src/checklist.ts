@@ -1,3 +1,5 @@
+import {Version, CompliantComiketNumber} from './main';
+
 export type Encoding = 'Shift_JIS' | 'ISO-2022-JP' | 'EUC-JP' | 'UTF-8';
 
 export interface Color {
@@ -77,16 +79,32 @@ export class Checklist {
   unknowns: ChecklistUnknown[];
   colors: ChecklistColor[];
 
+  constructor();
+  constructor(comiketNumber: number);
+  constructor(header: ChecklistHeader, circle?: ChecklistCircle[], unknowns?: ChecklistUnknown[], colors?: ChecklistColor[]);
   constructor(
-    header: ChecklistHeader,
-    circles?: ChecklistCircle[] | null,
-    unknowns?: ChecklistUnknown[] | null,
-    colors?: ChecklistColor[] | null
+    p1?: ChecklistHeader | number,
+    p2?: ChecklistCircle[],
+    p3?: ChecklistUnknown[],
+    p4?: ChecklistColor[]
   ) {
-    this.header = header;
-    this.circles = circles || [];
-    this.unknowns = unknowns || [];
-    this.colors = colors || [];
+    if (!p1 || typeof p1 === 'number') {
+      const comiketNumber = p1 || CompliantComiketNumber;
+      this.header = {
+        eventName: 'ComicMarket' + comiketNumber,
+        encoding: 'UTF-8',
+        programSignature: 'cmk-checklist ' + Version,
+      };
+      this.circles = [];
+      this.unknowns = [];
+      this.colors = [];
+    }
+    else {
+      this.header = p1;
+      this.circles = p2 || [];
+      this.unknowns = p3 || [];
+      this.colors = p4 || [];
+    }
   }
 
   getComiketNumber(): number | null {

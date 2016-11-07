@@ -1,7 +1,10 @@
 import * as lib from './lib';
 import {Checklist, Encoding} from './checklist';
 
+export const Version: string = require('./../package.json').version;
 export const CompliantComiketNumber: number = require('./../package.json').compliantComiketNumber;
+
+export {Checklist} from './checklist';
 
 export function parseChecklistCSV(input: string | Uint8Array | Buffer): Promise<string[][]>
 export function parseChecklistCSV(input: string | Uint8Array | Buffer, callback: (error?: Error, cells?: string[][]) => void): void;
