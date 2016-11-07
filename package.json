@@ -1,6 +1,6 @@
 {
   "name": "cmk-checklist",
-  "version": "0.90.2",
+  "version": "0.90.3",
   "compliantComiketNumber": 90,
   "description": "Read/Write CSV files for Comiket catalog checklist",
   "keywords": ["comiket", "comic market"],

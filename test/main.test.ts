@@ -1,3 +1,6 @@
+/// <reference path="./../node_modules/typescript/lib/lib.es6.d.ts" />
+/// <reference path="./../node_modules/@types/mocha/index.d.ts" />
+
 import * as assert from 'power-assert';
 import * as fs from 'fs';
 
@@ -173,6 +176,41 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
         index.read(str6).then((result) => {
           assert.deepEqual(result.colors[0].checkColor, {r: 0xa8, g: 0x57, b: 0xa8});
           assert.deepEqual(result.colors[0].printColor, {r: 0xff, g: 0xff, b: 0xff});
+        }),
+      ]);
+    });
+
+    it('should fail on missing required column', () => {
+      const header = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n';
+      const str1 = header + `Circle,212965,0,,,×,×,×,XX,100,"name","yomi","","","","","","",,,"",0,"","","",""`;
+      const str2 = header + `Circle,,0,,,×,×,×,XX,100,"name","yomi","","","","","","",,,"",0,"","","",""`;
+      const str3 = header + `Circle,212965,0,,,×,×,×,XX,100,,"yomi","","","","","","",,,"",0,"","","",""`;
+      const str4 = header + `Circle,212965,0,,,×,×,×,XX,100,"name",,"","","","","","",,,"",0,"","","",""`;
+      const str5 = header + `UnKnown,"name","yomi","","",0,"","","",""`;
+      const str6 = header + `UnKnown,,"yomi","","",0,"","","",""`;
+      const str7 = header + `UnKnown,"name",,"","",0,"","","",""`;
+
+      return Promise.all([
+        index.read(str1).then((result) => {
+          assert.equal(result.circles[0].serialNumber, 212965);
+        }),
+        index.read(str2).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Circle serial number is not defined (row: 2)');
+        }),
+        index.read(str3).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Circle name is not defined (row: 2)');
+        }),
+        index.read(str4).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Circle name yomigana is not defined (row: 2)');
+        }),
+        index.read(str5).then((result) => {
+          assert.equal(result.unknowns[0].colorNumber, 0);
+        }),
+        index.read(str6).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Circle name is not defined (row: 2)');
+        }),
+        index.read(str7).then(assert.fail, (error) => {
+          assert.equal(error.message, 'Circle name yomigana is not defined (row: 2)');
         }),
       ]);
     });

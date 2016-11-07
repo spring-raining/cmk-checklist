@@ -30,9 +30,7 @@ export function parseChecklistCSV(input: string | Uint8Array | Buffer): Promise<
 
       // check header encoding
       if (typeof input === 'string') {
-        if (detected === 'UNICODE' || detected == 'ASCII') {
-          resolve(ret);
-        }
+        resolve(ret);
       }
       if (detected === 'ASCII') {
         resolve(ret);
@@ -136,7 +134,6 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
   let block = readAsStr(row[7]);
   const circleName = readAsStr(row[10]);
   let circleNameYomi = readAsStr(row[11]);
-  const penName = readAsStr(row[12]);
   let spaceNumberSub = readAsNum(row[21]);
   if (serialNumber === undefined) {
     throw new Error(`Circle serial number is not defined (row: ${rowNumber})`);
@@ -145,12 +142,9 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     throw new Error(`Circle name is not defined (row: ${rowNumber})`);
   }
   if (circleNameYomi === undefined) {
-    throw new Error(`Circle name yomigana is not defined(row: ${rowNumber})`);
+    throw new Error(`Circle name yomigana is not defined (row: ${rowNumber})`);
   } else {
     circleNameYomi = Encoding.toZenkanaCase(circleNameYomi);
-  }
-  if (penName === undefined) {
-    throw new Error(`Pen name is not defined (row: ${rowNumber})`);
   }
   if (week && ['日', '月', '火', '水', '木', '金', '土'].indexOf(week) < 0) {
     week = undefined;
@@ -174,7 +168,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     genreCode: readAsNum(row[9]),
     circleName: circleName,
     circleNameYomi: circleNameYomi,
-    penName: penName,
+    penName: readAsStr(row[12]),
     bookName: readAsStr(row[13]),
     url: readAsStr(row[14]),
     mailAddress: readAsStr(row[15]),
@@ -201,23 +195,19 @@ function readUnknownRow(row: string[], rowNumber: number, eventNumber: number): 
 
   const circleName = readAsStr(row[1]);
   let circleNameYomi = readAsStr(row[2]);
-  const penName = readAsStr(row[3]);
   if (circleName === undefined) {
     throw new Error(`Circle name is not defined (row: ${rowNumber})`);
   }
   if (circleNameYomi === undefined) {
-    throw new Error(`Circle name yomigana is not defined(row: ${rowNumber})`);
+    throw new Error(`Circle name yomigana is not defined (row: ${rowNumber})`);
   } else {
     circleNameYomi = Encoding.toZenkanaCase(circleNameYomi);
-  }
-  if (penName === undefined) {
-    throw new Error(`Pen name is not defined (row: ${rowNumber})`);
   }
 
   return {
     circleName: circleName,
     circleNameYomi: circleNameYomi,
-    penName: penName,
+    penName: readAsStr(row[3]),
     memo: readAsStr(row[4]),
     colorNumber: readAsNum(row[5]),
     bookName: readAsStr(row[6]),
