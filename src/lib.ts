@@ -175,7 +175,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     genreCode: readAsNum(row[9]),
     circleName: circleName,
     circleNameYomi: circleNameYomi,
-    penName: readAsStr(row[12]),
+    penName: readAsStr(row[12]) || '',
     bookName: readAsStr(row[13]),
     url: readAsStr(row[14]),
     mailAddress: readAsStr(row[15]),
@@ -214,7 +214,7 @@ function readUnknownRow(row: string[], rowNumber: number, eventNumber: number): 
   return {
     circleName: circleName,
     circleNameYomi: circleNameYomi,
-    penName: readAsStr(row[3]),
+    penName: readAsStr(row[3]) || '',
     memo: readAsStr(row[4]),
     colorNumber: readAsNum(row[5]),
     bookName: readAsStr(row[6]),

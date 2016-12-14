@@ -32,7 +32,7 @@ export interface ChecklistCircle extends ChecklistColumn {
   genreCode?: number;
   circleName: string;
   circleNameYomi: string;
-  penName?: string;
+  penName: string;
   bookName?: string;
   url?: string;
   mailAddress?: string;
@@ -54,7 +54,7 @@ export interface ChecklistCircle extends ChecklistColumn {
 export interface ChecklistUnknown extends ChecklistColumn {
   circleName: string;
   circleNameYomi: string;
-  penName?: string;
+  penName: string;
   memo?: string;
   colorNumber?: number;
   bookName?: string;
