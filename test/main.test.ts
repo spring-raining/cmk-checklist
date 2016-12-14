@@ -57,6 +57,14 @@ describe('main', () => {
         ]);
       });
     });
+
+    it('should throw error on parsing invalid file', () => {
+      const str = fs.readFileSync(__dirname + '/main.test.ts');
+
+      return index.read(str).then(assert.fail, (error) => {
+        assert.notEqual(error, null);
+      });
+    });
   });
 
   describe('read', () => {
@@ -233,6 +241,14 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
       return index.read(str1).then((result) => {
         assert.equal(result.circles[0].circleNameYomi, 'ルミノシティ');
         assert.equal(result.unknowns[0].circleNameYomi, 'ダフーチ');
+      });
+    });
+
+    it('should throw error on reading invalid file', () => {
+      const str = fs.readFileSync(__dirname + '/main.test.ts');
+
+      return index.read(str).then(assert.fail, (error) => {
+        assert.notEqual(error, null);
       });
     });
   });
