@@ -184,7 +184,7 @@ function readCircleRow(row: string[], rowNumber: number, eventNumber: number): C
     mapX: readAsNum(row[18]),
     mapY: readAsNum(row[19]),
     mapLayout: readAsNum(row[20]),
-    spaceNumberSub: spaceNumberSub? <SpaceNumberSub>['a', 'b'][spaceNumberSub] : undefined,
+    spaceNumberSub: (spaceNumberSub === 0)? 'a' : (spaceNumberSub === 1)? 'b' : undefined,
     updateData: readAsStr(row[22]),
     webCatalogUrl: (eventNumber >= 90)? readAsStr(row[23]) : undefined,
     circlemsUrl: (eventNumber >=90)? readAsStr(row[24]): readAsStr(row[23]),

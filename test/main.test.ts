@@ -244,6 +244,17 @@ Circle,138882,3,1080,3,日,西,あ,19,100,比村乳業,ヒムラニュウギョ�
       });
     });
 
+    it('should read spaceNumberSub', () => {
+      const str1 = 'Header,ComicMarketCD-ROMCatalog,ComicMarket90,UTF-8,Web 1.90.1\n'
+        + `Circle,115860,3,440,21,土,東,Ａ,28,301,ルミノシティ,ﾙﾐﾉｼﾃｨ,ぺこ,,,,,,1100,30,3,0,,,,,,,\n`
+        + `Circle,115860,3,440,21,土,東,Ａ,28,301,ルミノシティ,ﾙﾐﾉｼﾃｨ,ぺこ,,,,,,1100,30,3,1,,,,,,,`;
+
+      return index.read(str1).then((result) => {
+        assert.equal(result.circles[0].spaceNumberSub, 'a');
+        assert.equal(result.circles[1].spaceNumberSub, 'b');
+      });
+    });
+
     it('should throw error on reading invalid file', () => {
       const str = fs.readFileSync(__dirname + '/main.test.ts');
 
